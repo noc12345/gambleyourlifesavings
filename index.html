@@ -38,16 +38,23 @@
     const button = document.getElementById("gambleButton");
 
     button.addEventListener("click", () => {
-      let changes = Math.floor(Math.random() * (15 - 9 + 1)) + 9; // Randomly 9-15 changes
+      let changes = Math.floor(Math.random() * (30 - 24 + 1)) + 24; // Randomly 9-15 changes
       let count = 0;
+      let delay = 50; // Start with a fast delay of 100ms
 
-      const interval = setInterval(() => {
+      const changeSymbol = () => {
+        if (count >= changes) return; // Stop after the target changes
         box.textContent = symbols[Math.floor(Math.random() * symbols.length)];
         count++;
-        if (count >= changes) {
-          clearInterval(interval);
-        }
-      }, 200); // Change symbol every 200ms
+
+        // Increase the delay to slow down as it progresses
+        delay += 10;
+
+        // Schedule the next symbol change with the new delay
+        setTimeout(changeSymbol, delay);
+      };
+
+      changeSymbol(); // Start the changes
     });
   </script>
 </body>
