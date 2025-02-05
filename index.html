@@ -5,15 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gamble Life Savings</title>
   <style>
-    #box {
-      width: 300px;
+    .container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 50px;
+    }
+
+    .box {
+      width: 100px;
       height: 200px;
       background-color: lightgray;
       display: flex;
       justify-content: center;
       align-items: center;
       border: 2px solid black;
-      margin: 20px auto;
       font-size: 40px;
       font-family: Arial, sans-serif;
       font-weight: bold;
@@ -21,7 +27,7 @@
 
     button {
       display: block;
-      margin: 10px auto;
+      margin: 20px auto;
       padding: 10px 20px;
       font-size: 16px;
       cursor: pointer;
@@ -29,32 +35,36 @@
   </style>
 </head>
 <body>
-  <div id="box">?</div>
+  <div class="container">
+    <div class="box" id="box1">?</div>
+    <div class="box" id="box2">?</div>
+    <div class="box" id="box3">?</div>
+  </div>
   <button id="gambleButton">Gamble Life Savings</button>
 
   <script>
     const symbols = ["$", "!", "@", "#", "%", "&", "*", "+", "?"];
-    const box = document.getElementById("box");
-    const button = document.getElementById("gambleButton");
-
-    button.addEventListener("click", () => {
-      let changes = Math.floor(Math.random() * (30 - 24 + 1)) + 24; // Randomly 9-15 changes
+    
+    function spinBox(box, minChanges, maxChanges, startDelay, delayIncrease) {
+      let changes = Math.floor(Math.random() * (maxChanges - minChanges + 1)) + minChanges;
       let count = 0;
-      let delay = 50; // Start with a fast delay of 100ms
+      let delay = startDelay;
 
       const changeSymbol = () => {
-        if (count >= changes) return; // Stop after the target changes
+        if (count >= changes) return;
         box.textContent = symbols[Math.floor(Math.random() * symbols.length)];
         count++;
-
-        // Increase the delay to slow down as it progresses
-        delay += 10;
-
-        // Schedule the next symbol change with the new delay
+        delay += delayIncrease;
         setTimeout(changeSymbol, delay);
       };
 
-      changeSymbol(); // Start the changes
+      changeSymbol();
+    }
+
+    document.getElementById("gambleButton").addEventListener("click", () => {
+      spinBox(document.getElementById("box1"), 5, 10, 150, 60); // Left box: least spins
+      spinBox(document.getElementById("box2"), 8, 13, 120, 50); // Middle box: moderate spins
+      spinBox(document.getElementById("box3"), 12, 18, 100, 40); // Right box: most spins
     });
   </script>
 </body>
