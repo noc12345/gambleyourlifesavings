@@ -23,6 +23,14 @@
       font-size: 40px;
       font-family: Arial, sans-serif;
       font-weight: bold;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .text {
+      position: absolute;
+      top: 0;
+      transition: top 0s linear;
     }
 
     button {
@@ -36,24 +44,42 @@
 </head>
 <body>
   <div class="container">
-    <div class="box" id="box1">?</div>
-    <div class="box" id="box2">?</div>
-    <div class="box" id="box3">?</div>
+    <div class="box" id="box1"><div class="text">?</div></div>
+    <div class="box" id="box2"><div class="text">?</div></div>
+    <div class="box" id="box3"><div class="text">?</div></div>
   </div>
   <button id="gambleButton">Gamble Life Savings</button>
 
   <script>
     const symbols = ["$", "!", "@", "#", "%", "&", "*", "+", "?"];
-    
+
     function spinBox(box, minChanges, maxChanges, startDelay, delayIncrease) {
       let changes = Math.floor(Math.random() * (maxChanges - minChanges + 1)) + minChanges;
       let count = 0;
       let delay = startDelay;
+      const textElement = box.querySelector('.text');
 
       const changeSymbol = () => {
-        if (count >= changes) return;
-        box.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        if (count >= changes) {
+          // Stop sliding and keep the final symbol in the center
+          textElement.style.transition = 'top 0s'; // Instant stop
+          textElement.style.top = '50%'; // Keep at center
+          return;
+        }
+
+        textElement.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+
+        // Slide down by increasing the "top" value
+        textElement.style.transition = `top ${delay}ms linear`;
+        textElement.style.top = '100%'; // Slide to the bottom
+
         count++;
+
+        // After the slide down, reset to the top for the next change
+        setTimeout(() => {
+          textElement.style.top = '-100%'; // Reset to the top
+        }, delay);
+
         delay += delayIncrease;
         setTimeout(changeSymbol, delay);
       };
