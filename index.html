@@ -36,80 +36,116 @@
       font-size: 16px;
       cursor: pointer;
     }
+    #lifeSavingsDisplay {
+      font-size: 20px;
+      font-weight: bold;
+    }
+    #betInputContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+    #betInput {
+      width: 80px;
+      font-size: 16px;
+      padding: 5px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
+  <div id="lifeSavingsDisplay">Life Savings: 10$</div>
+
   <div class="container">
     <div class="box" id="box1"><div class="text">?</div></div>
     <div class="box" id="box2"><div class="text">?</div></div>
     <div class="box" id="box3"><div class="text">?</div></div>
   </div>
-  <button id="gambleButton">Gamble Life Savings</button>
+
+  <div id="betInputContainer">
+    <label for="betInput">Input your bet</label>
+    <input type="number" id="betInput" min="1" />
+  </div>
+
+  <button id="gambleButton" disabled>Gamble Life Savings</button>
 
   <script>
     const symbols = ["$", "!", "@", "#", "%", "&", "*", "+", "?"];
+    let lifeSavings = 10;
 
-    /**
-     * Spins the given box by repeatedly sliding its text down.
-     *
-     * @param {Element} box - The container element with a nested .text element.
-     * @param {number} minChanges - Minimum number of spins.
-     * @param {number} maxChanges - Maximum number of spins.
-     * @param {number} startDelay - Initial delay/duration in ms for the sliding animation.
-     * @param {number} delayIncrease - Amount to increase the delay each cycle.
-     */
+    const lifeSavingsDisplay = document.getElementById("lifeSavingsDisplay");
+    const betInput = document.getElementById("betInput");
+    const gambleButton = document.getElementById("gambleButton");
+
+    // Update the life savings display
+    function updateLifeSavingsDisplay() {
+      lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings}$`;
+    }
+
+    // Check if the bet is valid (not greater than life savings)
+    betInput.addEventListener("input", () => {
+      const betAmount = parseInt(betInput.value, 10);
+      if (betAmount > lifeSavings || isNaN(betAmount) || betAmount <= 0) {
+        gambleButton.disabled = true;
+      } else {
+        gambleButton.disabled = false;
+      }
+    });
+
+    // Spin the box and subtract the bet amount from life savings
     function spinBox(box, minChanges, maxChanges, startDelay, delayIncrease) {
       const totalChanges =
         Math.floor(Math.random() * (maxChanges - minChanges + 1)) + minChanges;
       const textElement = box.querySelector(".text");
 
-      /**
-       * Performs one spin cycle.
-       *
-       * @param {number} count - The current spin count.
-       * @param {number} currentDelay - The current delay/duration for the slide.
-       */
       function spinCycle(count, currentDelay) {
         if (count >= totalChanges) {
-          // Final spin: animate to center and stop.
           textElement.textContent =
             symbols[Math.floor(Math.random() * symbols.length)];
           textElement.style.transition = `top ${currentDelay}ms linear`;
-          textElement.style.top = "50%"; // move to center
+          textElement.style.top = "50%"; 
           return;
         }
 
-        // Set a new random symbol.
         textElement.textContent =
           symbols[Math.floor(Math.random() * symbols.length)];
 
-        // Animate sliding from the current position (should be at -100%) to the bottom.
         textElement.style.transition = `top ${currentDelay}ms linear`;
-        textElement.style.top = "100%"; // slide to bottom
+        textElement.style.top = "100%"; 
 
-        // When the transition finishes, teleport back to the top and start the next cycle.
         setTimeout(() => {
-          // Remove transition for an instant reset.
           textElement.style.transition = "none";
-          textElement.style.top = "-100%"; // teleport to top
+          textElement.style.top = "-100%"; 
 
-          // Use a very short delay to allow the DOM to update, then start the next cycle.
           setTimeout(() => {
             spinCycle(count + 1, currentDelay + delayIncrease);
           }, 20);
         }, currentDelay);
       }
 
-      // Ensure the text starts above the visible area.
       textElement.style.top = "-100%";
       spinCycle(0, startDelay);
     }
 
-    document.getElementById("gambleButton").addEventListener("click", () => {
-      spinBox(document.getElementById("box1"), 15, 20, 50, 40); // Left box: fewer spins, slower reset
-      spinBox(document.getElementById("box2"), 24, 28, 40, 20); // Middle box: moderate spins
-      spinBox(document.getElementById("box3"), 31, 35, 20, 10); // Right box: more spins, faster initially
+    gambleButton.addEventListener("click", () => {
+      const betAmount = parseInt(betInput.value, 10);
+      if (betAmount <= lifeSavings && !isNaN(betAmount) && betAmount > 0) {
+        // Subtract the bet amount from life savings
+        lifeSavings -= betAmount;
+        updateLifeSavingsDisplay();
+
+        // Trigger the spin for all three boxes
+        spinBox(document.getElementById("box1"), 15, 20, 50, 40);
+        spinBox(document.getElementById("box2"), 24, 28, 40, 20);
+        spinBox(document.getElementById("box3"), 31, 35, 20, 10);
+      } else {
+        alert("Invalid bet amount! Please enter a valid bet that is less than or equal to your life savings.");
+      }
     });
+
+    // Initialize the life savings display
+    updateLifeSavingsDisplay();
   </script>
 </body>
 </html>
