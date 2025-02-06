@@ -62,7 +62,7 @@
       const changeSymbol = () => {
         if (count >= changes) {
           // Stop sliding and keep the final symbol in the center
-          textElement.style.transition = 'top 0s'; // Instant stop
+          textElement.style.transition = 'top 0s'; // No transition on last change
           textElement.style.top = '50%'; // Keep at center
           return;
         }
@@ -75,9 +75,9 @@
 
         count++;
 
-        // After the slide down, reset to the top for the next change
+        // After the slide down, reset to the top immediately
         setTimeout(() => {
-          textElement.style.top = '-100%'; // Reset to the top
+          textElement.style.top = '-100%'; // Instant teleport back to the top
         }, delay);
 
         delay += delayIncrease;
