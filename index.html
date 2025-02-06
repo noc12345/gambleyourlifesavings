@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gamble Life Savings</title>
   <style>
     .container {
@@ -11,7 +11,6 @@
       gap: 20px;
       margin-top: 50px;
     }
-
     .box {
       width: 100px;
       height: 200px;
@@ -26,13 +25,10 @@
       position: relative;
       overflow: hidden;
     }
-
     .text {
       position: absolute;
-      top: 0;
-      transition: top 0s linear;
+      top: -100%; /* start above the visible area */
     }
-
     button {
       display: block;
       margin: 20px auto;
@@ -53,44 +49,66 @@
   <script>
     const symbols = ["$", "!", "@", "#", "%", "&", "*", "+", "?"];
 
+    /**
+     * Spins the given box by repeatedly sliding its text down.
+     *
+     * @param {Element} box - The container element with a nested .text element.
+     * @param {number} minChanges - Minimum number of spins.
+     * @param {number} maxChanges - Maximum number of spins.
+     * @param {number} startDelay - Initial delay/duration in ms for the sliding animation.
+     * @param {number} delayIncrease - Amount to increase the delay each cycle.
+     */
     function spinBox(box, minChanges, maxChanges, startDelay, delayIncrease) {
-      let changes = Math.floor(Math.random() * (maxChanges - minChanges + 1)) + minChanges;
-      let count = 0;
-      let delay = startDelay;
-      const textElement = box.querySelector('.text');
+      const totalChanges =
+        Math.floor(Math.random() * (maxChanges - minChanges + 1)) + minChanges;
+      const textElement = box.querySelector(".text");
 
-      const changeSymbol = () => {
-        if (count >= changes) {
-          // Stop sliding and keep the final symbol in the center
-          textElement.style.transition = 'top 0s'; // No transition on last change
-          textElement.style.top = '50%'; // Keep at center
+      /**
+       * Performs one spin cycle.
+       *
+       * @param {number} count - The current spin count.
+       * @param {number} currentDelay - The current delay/duration for the slide.
+       */
+      function spinCycle(count, currentDelay) {
+        if (count >= totalChanges) {
+          // Final spin: animate to center and stop.
+          textElement.textContent =
+            symbols[Math.floor(Math.random() * symbols.length)];
+          textElement.style.transition = `top ${currentDelay}ms linear`;
+          textElement.style.top = "50%"; // move to center
           return;
         }
 
-        textElement.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        // Set a new random symbol.
+        textElement.textContent =
+          symbols[Math.floor(Math.random() * symbols.length)];
 
-        // Slide down by increasing the "top" value
-        textElement.style.transition = `top ${delay}ms linear`;
-        textElement.style.top = '100%'; // Slide to the bottom
+        // Animate sliding from the current position (should be at -100%) to the bottom.
+        textElement.style.transition = `top ${currentDelay}ms linear`;
+        textElement.style.top = "100%"; // slide to bottom
 
-        count++;
-
-        // After the slide down, reset to the top immediately
+        // When the transition finishes, teleport back to the top and start the next cycle.
         setTimeout(() => {
-          textElement.style.top = '-100%'; // Instant teleport back to the top
-        }, delay);
+          // Remove transition for an instant reset.
+          textElement.style.transition = "none";
+          textElement.style.top = "-100%"; // teleport to top
 
-        delay += delayIncrease;
-        setTimeout(changeSymbol, delay);
-      };
+          // Use a very short delay to allow the DOM to update, then start the next cycle.
+          setTimeout(() => {
+            spinCycle(count + 1, currentDelay + delayIncrease);
+          }, 20);
+        }, currentDelay);
+      }
 
-      changeSymbol();
+      // Ensure the text starts above the visible area.
+      textElement.style.top = "-100%";
+      spinCycle(0, startDelay);
     }
 
     document.getElementById("gambleButton").addEventListener("click", () => {
-      spinBox(document.getElementById("box1"), 15, 20, 50, 40); // Left box: least spins
+      spinBox(document.getElementById("box1"), 15, 20, 50, 40); // Left box: fewer spins, slower reset
       spinBox(document.getElementById("box2"), 24, 28, 40, 20); // Middle box: moderate spins
-      spinBox(document.getElementById("box3"), 31, 35, 20, 10); // Right box: most spins
+      spinBox(document.getElementById("box3"), 31, 35, 20, 10); // Right box: more spins, faster initially
     });
   </script>
 </body>
