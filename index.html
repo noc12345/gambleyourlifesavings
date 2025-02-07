@@ -152,11 +152,11 @@
           }
           // Two "$" symbols reward
           else if (finalSymbols.filter(s => s === "$").length === 2) {
-            lifeSavings += 15;
+            lifeSavings += betAmount * 2.5;
           }
           // Two "%" symbols reward
           else if (finalSymbols.filter(s => s === "%").length === 2) {
-            lifeSavings += 10;
+            lifeSavings += betAmount * 2;
           }
           
           updateLifeSavingsDisplay();
