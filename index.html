@@ -27,7 +27,7 @@
     }
     .text {
       position: absolute;
-      top: -100%; /* start above the visible area */
+      top: -100%;
     }
     button {
       display: block;
@@ -39,6 +39,8 @@
     #lifeSavingsDisplay {
       font-size: 20px;
       font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
     }
     #betInputContainer {
       display: flex;
@@ -78,39 +80,30 @@
     const betInput = document.getElementById("betInput");
     const gambleButton = document.getElementById("gambleButton");
 
-    // Update the life savings display
     function updateLifeSavingsDisplay() {
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings}$`;
     }
 
-    // Check if the bet is valid (not greater than life savings)
     betInput.addEventListener("input", () => {
       const betAmount = parseInt(betInput.value, 10);
-      if (betAmount > lifeSavings || isNaN(betAmount) || betAmount <= 0) {
-        gambleButton.disabled = true;
-      } else {
-        gambleButton.disabled = false;
-      }
+      gambleButton.disabled = betAmount > lifeSavings || isNaN(betAmount) || betAmount <= 0;
     });
 
-    // Spin the box and subtract the bet amount from life savings
-    function spinBox(box, minChanges, maxChanges, startDelay, delayIncrease) {
-      const totalChanges =
-        Math.floor(Math.random() * (maxChanges - minChanges + 1)) + minChanges;
+    function spinBox(box, minChanges, maxChanges, startDelay, delayIncrease, callback) {
+      const totalChanges = Math.floor(Math.random() * (maxChanges - minChanges + 1)) + minChanges;
       const textElement = box.querySelector(".text");
 
       function spinCycle(count, currentDelay) {
         if (count >= totalChanges) {
-          textElement.textContent =
-            symbols[Math.floor(Math.random() * symbols.length)];
+          const finalSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+          textElement.textContent = finalSymbol;
           textElement.style.transition = `top ${currentDelay}ms linear`;
           textElement.style.top = "50%"; 
+          callback(finalSymbol); // Pass final symbol to check for jackpot
           return;
         }
 
-        textElement.textContent =
-          symbols[Math.floor(Math.random() * symbols.length)];
-
+        textElement.textContent = symbols[Math.floor(Math.random() * symbols.length)];
         textElement.style.transition = `top ${currentDelay}ms linear`;
         textElement.style.top = "100%"; 
 
@@ -130,21 +123,30 @@
 
     gambleButton.addEventListener("click", () => {
       const betAmount = parseInt(betInput.value, 10);
-      if (betAmount <= lifeSavings && !isNaN(betAmount) && betAmount > 0) {
-        // Subtract the bet amount from life savings
-        lifeSavings -= betAmount;
-        updateLifeSavingsDisplay();
+      if (betAmount > lifeSavings || isNaN(betAmount) || betAmount <= 0) return;
 
-        // Trigger the spin for all three boxes
-        spinBox(document.getElementById("box1"), 15, 20, 50, 40);
-        spinBox(document.getElementById("box2"), 24, 28, 40, 20);
-        spinBox(document.getElementById("box3"), 31, 35, 20, 10);
-      } else {
-        alert("Invalid bet amount! Please enter a valid bet that is less than or equal to your life savings.");
+      lifeSavings -= betAmount;
+      updateLifeSavingsDisplay();
+
+      let finalSymbols = [];
+
+      function checkJackpot(symbol) {
+        finalSymbols.push(symbol);
+        if (finalSymbols.length === 3) {
+          if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
+            let winnings = betAmount * 77;
+            lifeSavings += winnings;
+            alert(`JACKPOT! You won ${winnings}$`);
+            updateLifeSavingsDisplay();
+          }
+        }
       }
+
+      spinBox(document.getElementById("box1"), 15, 20, 50, 40, checkJackpot);
+      spinBox(document.getElementById("box2"), 24, 28, 40, 20, checkJackpot);
+      spinBox(document.getElementById("box3"), 31, 35, 20, 10, checkJackpot);
     });
 
-    // Initialize the life savings display
     updateLifeSavingsDisplay();
   </script>
 </body>
