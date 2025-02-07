@@ -70,7 +70,7 @@
     <input type="number" id="betInput" min="1" />
   </div>
 
-  <button id="gambleButton" disabled>Gamble</button>
+  <button id="gambleButton" disabled>Gamble Life Savings</button>
 
   <script>
     const symbols = ["$", "!", "@", "#", "%", "&", "*", "+", "?"];
@@ -99,7 +99,7 @@
           textElement.textContent = finalSymbol;
           textElement.style.transition = `top ${currentDelay}ms linear`;
           textElement.style.top = "50%"; 
-          callback(finalSymbol); // Pass final symbol to check for jackpot
+          callback(finalSymbol);
           return;
         }
 
@@ -136,7 +136,6 @@
           if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
             let winnings = betAmount * 77;
             lifeSavings += winnings;
-            alert(`JACKPOT! You won ${winnings}$`);
             updateLifeSavingsDisplay();
           }
         }
