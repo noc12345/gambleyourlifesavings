@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gamble Life Savings</title>
   <style>
+    body {
+      background-color: white; /* Change to any color */
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
     .container {
       display: flex;
       justify-content: center;
@@ -20,7 +25,6 @@
       align-items: center;
       border: 2px solid black;
       font-size: 40px;
-      font-family: Arial, sans-serif;
       font-weight: bold;
       position: relative;
       overflow: hidden;
@@ -39,7 +43,6 @@
     #lifeSavingsDisplay {
       font-size: 20px;
       font-weight: bold;
-      text-align: center;
       margin-bottom: 10px;
     }
     #betInputContainer {
@@ -67,7 +70,7 @@
 
   <div id="betInputContainer">
     <label for="betInput">Input your bet</label>
-    <input type="number" id="betInput" min="1" />
+    <input type="number" id="betInput" min="1">
   </div>
 
   <button id="gambleButton" disabled>Gamble</button>
@@ -79,6 +82,14 @@
     const lifeSavingsDisplay = document.getElementById("lifeSavingsDisplay");
     const betInput = document.getElementById("betInput");
     const gambleButton = document.getElementById("gambleButton");
+
+    // Sound effect setup
+    const spinSound = new Audio("https://noc12345.github.io/gambleyourlifesavings/click.mp3"); // Change to your file path
+
+    function playSpinSound() {
+      spinSound.currentTime = 0; // Restart sound if still playing
+      spinSound.play();
+    }
 
     function updateLifeSavingsDisplay() {
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings}$`;
@@ -98,18 +109,20 @@
           const finalSymbol = symbols[Math.floor(Math.random() * symbols.length)];
           textElement.textContent = finalSymbol;
           textElement.style.transition = `top ${currentDelay}ms linear`;
-          textElement.style.top = "50%"; 
+          textElement.style.top = "50%";
           callback(finalSymbol);
           return;
         }
 
+        playSpinSound(); // Play sound effect every symbol change
+
         textElement.textContent = symbols[Math.floor(Math.random() * symbols.length)];
         textElement.style.transition = `top ${currentDelay}ms linear`;
-        textElement.style.top = "100%"; 
+        textElement.style.top = "100%";
 
         setTimeout(() => {
           textElement.style.transition = "none";
-          textElement.style.top = "-100%"; 
+          textElement.style.top = "-100%";
 
           setTimeout(() => {
             spinCycle(count + 1, currentDelay + delayIncrease);
