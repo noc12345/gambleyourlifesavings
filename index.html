@@ -146,20 +146,39 @@
           isSpinning = false;
           checkGambleAvailability();
 
-          // Jackpot: all three symbols match
-          if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
-            lifeSavings += betAmount * 77;
-          }
-          // Two "$" symbols reward
-          else if (finalSymbols.filter(s => s === "$").length === 2) {
-            lifeSavings += betAmount * 2.5;
-          }
-          // Two "%" symbols reward
-          else if (finalSymbols.filter(s => s === "%").length === 2) {
-            lifeSavings += betAmount * 2;
-          }
+          const winningCombinations = [
+            { symbols: ["$", "$"], reward: 6, multiplier: true }, // Two $
+            { symbols: ["%", "%"], reward: 2.5, multiplier: true }, // Two %
+            { symbols: ["@", "@"], reward: 5, multiplier: true }, // Example: Two @ gives 5$
+            { symbols: ["%", "%", "$"], reward: 7, multiplier: true}
+          ];
           
-          updateLifeSavingsDisplay();
+          function checkWinnings(finalSymbols, betAmount) {
+            let symbolCounts = {}; // Count occurrences of each symbol
+          
+            // Count how many times each symbol appears
+            finalSymbols.forEach(symbol => {
+              symbolCounts[symbol] = (symbolCounts[symbol] || 0) + 1;
+            });
+          
+            // Jackpot: If any symbol appears 3 times
+            for (let symbol in symbolCounts) {
+              if (symbolCounts[symbol] === 3) {
+                lifeSavings += betAmount * 77; // Jackpot multiplier
+                updateLifeSavingsDisplay();
+                return; // Exit early (Jackpot overrides other winnings)
+              }
+            }
+          
+            // Check custom winning conditions (for mixed symbols)
+            for (const combo of winningCombinations) {
+              if (combo.symbols.every(symbol => finalSymbols.includes(symbol))) {
+                lifeSavings += combo.multiplier ? betAmount * combo.reward : combo.reward;
+              }
+            }
+          
+            updateLifeSavingsDisplay();
+          }
         }
       }
 
