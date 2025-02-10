@@ -58,6 +58,16 @@
   </style>
 </head>
 <body>
+  <div id="winningCombinations">
+    <h3>Winning Combinations:</h3>
+    <ul>
+      <li>three of a kind → <b>$77x</b></li>
+      <li>two of '$' → <b>$2.5x</b></li>
+      <li>two of '% → <b>$2x</b></li>
+      <li>two '!'s and a '$' → <b>$50x</b></li>
+    </ul>
+  </div>
+
   <div id="lifeSavingsDisplay">Life Savings: 100.00$</div>
 
   <div class="container">
@@ -149,7 +159,7 @@
 
           // Jackpot: all three symbols match
           if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
-            lifeSavings += betAmount * 77;
+          lifeSavings += betAmount * 77; // Jackpot multiplier
           }
           // Two "$" symbols reward
           else if (finalSymbols.filter(s => s === "$").length === 2) {
@@ -159,6 +169,11 @@
           else if (finalSymbols.filter(s => s === "%").length === 2) {
             lifeSavings += betAmount * 2;
           }
+          // "!!$" combination reward (two "!" and one "$")
+          else if (finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")) {
+            lifeSavings += betAmount * 50;
+          }
+
           
           updateLifeSavingsDisplay();
         }
