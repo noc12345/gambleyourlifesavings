@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,121 +59,6 @@
   </style>
 </head>
 <body>
-
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gamble Life Savings</title>
-  <style>
-    /* Your existing game styles here */
-
-    /* Optional: Add some styles for the registration form */
-    #registerContainer {
-      text-align: center;
-      margin-top: 30px;
-    }
-
-    #registerContainer input {
-      margin: 5px;
-      padding: 10px;
-      font-size: 16px;
-    }
-
-    #registerContainer button {
-      padding: 10px 20px;
-      font-size: 16px;
-    }
-  </style>
-</head>
-<body>
-  <!-- Registration Form -->
-  <div id="registerContainer">
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
-    <button id="registerButton">Register</button>
-  </div>
-
-  <!-- Game UI -->
-  <div id="lifeSavingsDisplay">Life Savings: 100.00$</div>
-  <!-- Your game content like boxes, buttons, etc. -->
-
-  <!-- Save & Load Progress -->
-  <button id="saveButton">Save Progress</button>
-  <button id="loadButton">Load Progress</button>
-
-  <!-- Game Script -->
-  <script>
-    // Your existing gambling game code...
-
-    // Registration function
-    async function register(username, password) {
-      let response = await fetch("https://noc12345.github.io/gambleyourlifesavings/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
-      let text = await response.text();
-      alert(text);
-    }
-
-    document.getElementById("registerButton").addEventListener("click", () => {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-      if (username && password) {
-        register(username, password);
-      } else {
-        alert("Please enter both username and password");
-      }
-    });
-
-    // Save progress function
-    async function saveProgress(username, savings) {
-      await fetch("https://noc12345.github.io/gambleyourlifesavings/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, savings })
-      });
-    }
-
-    document.getElementById("saveButton").addEventListener("click", () => {
-      const username = document.getElementById("username").value;  // Replace with logged-in username
-      const savings = 100.00;  // Replace with actual game savings
-      saveProgress(username, savings);
-    });
-
-    // Load progress function
-    async function loadProgress(username) {
-      let response = await fetch("https://noc12345.github.io/gambleyourlifesavings/load", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username })
-      });
-      let data = await response.json();
-      alert("Your saved progress: " + data.savings);
-      // Update game UI with loaded progress
-    }
-
-    document.getElementById("loadButton").addEventListener("click", () => {
-      const username = document.getElementById("username").value;  // Replace with logged-in username
-      loadProgress(username);
-    });
-  </script>
-</body>
-</html>
-
-
-
-
-
-
-
-
-  
   <div id="winningCombinations">
     <h3>Winning Combinations:</h3>
     <ul>
