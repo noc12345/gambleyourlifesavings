@@ -7,6 +7,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gamble Life Savings</title>
   <style>
+    #multiplierDisplay {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+
     .container {
       display: flex;
       justify-content: center;
@@ -59,6 +71,7 @@
   </style>
 </head>
 <body>
+  <div id="multiplierDisplay">Multiplier: 1x</div>
   <div id="winningCombinations">
     <h3>Winning Combinations:</h3>
     <ul>
@@ -158,22 +171,34 @@
           isSpinning = false;
           checkGambleAvailability();
 
-          // Jackpot: all three symbols match
-          if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
-          lifeSavings += betAmount * 77; // Jackpot multiplier
+         if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
+          lifeSavings += betAmount * 77 * multiplier; // Jackpot (applies multiplier)
           }
           // Two "$" symbols reward
           else if (finalSymbols.filter(s => s === "$").length === 2) {
-            lifeSavings += betAmount * 2.5;
+            lifeSavings += betAmount * 2.5 * multiplier;
           }
           // Two "%" symbols reward
           else if (finalSymbols.filter(s => s === "%").length === 2) {
-            lifeSavings += betAmount * 2;
+            lifeSavings += betAmount * 2 * multiplier;
           }
-          // "!!$" combination reward (two "!" and one "$")
+          // "!!$" combination reward
           else if (finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")) {
-            lifeSavings += betAmount * 50;
+            lifeSavings += betAmount * 50 * multiplier;
           }
+          
+          // Increase multiplier when getting two "#" symbols
+          if (finalSymbols.filter(s => s === "#").length === 2) {
+            multiplier += 0.2;
+          }
+          
+          // Increase multiplier when getting two "+" symbols
+          if (finalSymbols.filter(s => s === "+").length === 2) {
+            multiplier += 0.1;
+          }
+          
+          updateMultiplierDisplay();
+
 
           
           updateLifeSavingsDisplay();
