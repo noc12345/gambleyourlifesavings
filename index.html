@@ -175,36 +175,21 @@
           isSpinning = false;
           checkGambleAvailability();
 
-         if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
-          lifeSavings += betAmount * 77 * multiplier; // Jackpot (applies multiplier)
-          }
-          // Two "$" symbols reward
-          else if (finalSymbols.filter(s => s === "$").length === 2) {
+          if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
+            lifeSavings += betAmount * 77 * multiplier; // Jackpot (applies multiplier)
+          }else if (finalSymbols.filter(s => s === "$").length === 2) {
             lifeSavings += betAmount * 2.5 * multiplier;
-          }
-          // Two "%" symbols reward
-          else if (finalSymbols.filter(s => s === "%").length === 2) {
+          }else if (finalSymbols.filter(s => s === "%").length === 2) {
             lifeSavings += betAmount * 2 * multiplier;
-          }
-          // "!!$" combination reward
-          else if (finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")) {
+          }else if (finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")) {
             lifeSavings += betAmount * 50 * multiplier;
-          }
-          
-          // Increase multiplier when getting two "#" symbols
-          if (finalSymbols.filter(s => s === "#").length === 2) {
+          }else if (finalSymbols.filter(s => s === "#").length === 2) {
             multiplier += 0.2;
-          }
-          
-          // Increase multiplier when getting two "+" symbols
-          if (finalSymbols.filter(s => s === "+").length === 2) {
+          }else if (finalSymbols.filter(s => s === "+").length === 2) {
             multiplier += 0.1;
           }
           
           updateMultiplierDisplay();
-
-
-          
           updateLifeSavingsDisplay();
         }
       }
