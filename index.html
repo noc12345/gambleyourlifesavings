@@ -124,17 +124,13 @@
     const devPanel = document.getElementById("devPanel");
     let debugMode = false;
     
-    // Show panel when clicked
     devPanel.addEventListener("focus", () => {
       devPanel.style.opacity = "1";
     });
-    
-    // Hide panel when unfocused
     devPanel.addEventListener("blur", () => {
       devPanel.style.opacity = "0";
     });
     
-    // Listen for commands
     devPanel.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         const command = devPanel.value.trim();
@@ -170,12 +166,43 @@
           lifeSavings += 77 * multiplier;
           updateLifeSavingsDisplay();
         } else if (command.startsWith("$spin ")) {
-          const symbols = command.split(" ").slice(1);
-          if (symbols.length === 3 && symbols.every(s => s.length === 1)) {
-            document.getElementById("box1").querySelector(".text").textContent = symbols[0];
-            document.getElementById("box2").querySelector(".text").textContent = symbols[1];
-            document.getElementById("box3").querySelector(".text").textContent = symbols[2];
+          const forcedSymbols = command.split(" ").slice(1);
+          if (forcedSymbols.length === 3 && forcedSymbols.every(s => s.length === 1)) {
+            isSpinning = true;
+            gambleButton.disabled = true;
+    
+            let finalSymbols = [];
+            let completedSpins = 0;
+    
+            function checkJackpot(symbol, index) {
+              finalSymbols.push(index === 2 ? forcedSymbols[index] : symbol); // Force last symbol
+              completedSpins++;
+              if (completedSpins === 3) {
+                isSpinning = false;
+                checkGambleAvailability();
+                document.getElementById("box1").querySelector(".text").textContent = finalSymbols[0];
+                document.getElementById("box2").querySelector(".text").textContent = finalSymbols[1];
+                document.getElementById("box3").querySelector(".text").textContent = finalSymbols[2];
+              }
+            }
+    
+            spinBox(document.getElementById("box1"), 15, 20, 50, 40, (s) => checkJackpot(s, 0));
+            spinBox(document.getElementById("box2"), 24, 28, 40, 20, (s) => checkJackpot(s, 1));
+            spinBox(document.getElementById("box3"), 31, 35, 20, 10, (s) => checkJackpot(s, 2));
           }
+        } else if (command.startsWith("$list")) {
+          const args = command.split(" ").slice(1);
+          if (args.length === 0) {
+            console.log(`Current symbols: ${symbols.join(", ")}`);
+          } else {
+            const newSymbols = args.join("").split(",");
+            symbols.push(...newSymbols.filter(s => !symbols.includes(s)));
+            console.log(`Updated symbols: ${symbols.join(", ")}`);
+          }
+        } else if (command.startsWith("$-list ")) {
+          const removeSymbols = command.split(" ").slice(1).join("").split(",");
+          symbols = symbols.filter(s => !removeSymbols.includes(s));
+          console.log(`Updated symbols: ${symbols.join(", ")}`);
         } else if (command === "$debug") {
           debugMode = !debugMode;
           console.log(`Debug mode: ${debugMode ? "ON" : "OFF"}`);
@@ -183,6 +210,12 @@
       }
     });
     
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "`") {
+        devPanel.focus();
+      }
+    });
+
     // Activate the dev panel when pressing "~"
     document.addEventListener("keydown", (event) => {
       if (event.key === "`") {
