@@ -122,20 +122,19 @@
 
   <script>
     const devPanel = document.getElementById("devPanel");
-
+    let debugMode = false;
+    
     // Show panel when clicked
-    devPanel.addEventListener("click", () => {
+    devPanel.addEventListener("focus", () => {
       devPanel.style.opacity = "1";
     });
     
-    // Hide when clicking outside
-    document.addEventListener("click", (event) => {
-      if (event.target !== devPanel) {
-        devPanel.style.opacity = "0";
-      }
+    // Hide panel when unfocused
+    devPanel.addEventListener("blur", () => {
+      devPanel.style.opacity = "0";
     });
     
-    // Handle commands
+    // Listen for commands
     devPanel.addEventListener("keydown", (event) => {
       if (event.key === "Enter") {
         const command = devPanel.value.trim();
@@ -147,18 +146,47 @@
             lifeSavings += amount;
             updateLifeSavingsDisplay();
           }
-        } else if (command.startsWith("$multiplier ")) {
+        } else if (command.startsWith("$setmoney ")) {
+          const amount = parseFloat(command.split(" ")[1]);
+          if (!isNaN(amount)) {
+            lifeSavings = amount;
+            updateLifeSavingsDisplay();
+          }
+        } else if (command.startsWith("$setmultiplier ")) {
           const newMultiplier = parseFloat(command.split(" ")[1]);
           if (!isNaN(newMultiplier)) {
             multiplier = newMultiplier;
             updateMultiplierDisplay();
           }
-        } else if (command === "$reset") {
+        } else if (command === "$resetmultiplier") {
+          multiplier = 1;
+          updateMultiplierDisplay();
+        } else if (command === "$resetall") {
           lifeSavings = 10.0;
           multiplier = 1;
           updateLifeSavingsDisplay();
           updateMultiplierDisplay();
+        } else if (command === "$jackpot") {
+          lifeSavings += 77 * multiplier;
+          updateLifeSavingsDisplay();
+        } else if (command.startsWith("$spin ")) {
+          const symbols = command.split(" ").slice(1);
+          if (symbols.length === 3 && symbols.every(s => s.length === 1)) {
+            document.getElementById("box1").querySelector(".text").textContent = symbols[0];
+            document.getElementById("box2").querySelector(".text").textContent = symbols[1];
+            document.getElementById("box3").querySelector(".text").textContent = symbols[2];
+          }
+        } else if (command === "$debug") {
+          debugMode = !debugMode;
+          console.log(`Debug mode: ${debugMode ? "ON" : "OFF"}`);
         }
+      }
+    });
+    
+    // Activate the dev panel when pressing "~"
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "`") {
+        devPanel.focus();
       }
     });
 
