@@ -104,7 +104,7 @@
     </ul>
   </div>
 
-  <div id="lifeSavingsDisplay">Life Savings: 100.00$</div>
+  <div id="lifeSavingsDisplay">Life Savings: 10.00$</div>
 
   <div class="container">
     <div class="box" id="box1"><div class="text">?</div></div>
@@ -148,13 +148,13 @@
             updateLifeSavingsDisplay();
           }
         } else if (command.startsWith("$money set ")) {
-          const amount = parseFloat(command.split(" ")[1]);
+          const amount = parseFloat(command.split(" ")[2]);
           if (!isNaN(amount)) {
             lifeSavings = amount;
             updateLifeSavingsDisplay();
           }
         } else if (command.startsWith("$mul set ")) {
-          const newMultiplier = parseFloat(command.split(" ")[1]);
+          const newMultiplier = parseFloat(command.split(" ")[2]);
           if (!isNaN(newMultiplier)) {
             multiplier = newMultiplier;
             updateMultiplierDisplay();
