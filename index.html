@@ -8,6 +8,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gamble Life Savings</title>
   <style>
+    #devPanel {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      width: 150px;
+      padding: 5px;
+      font-size: 14px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: black;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    #devPanel:focus {
+      opacity: 1;
+      background: white;
+      border: 1px solid black;
+    }
+
     #multiplierDisplay {
       position: fixed;
       bottom: 10px;
@@ -69,6 +90,8 @@
   </style>
 </head>
 <body>
+  <input type="text" id="devPanel" placeholder="..." />
+
   <div id="multiplierDisplay">Multiplier: 1x</div>
 
   <div id="winningCombinations">
@@ -97,6 +120,47 @@
   <button id="gambleButton" disabled>Gamble Life Savings</button>
 
   <script>
+    const devPanel = document.getElementById("devPanel");
+
+    // Show panel when clicked
+    devPanel.addEventListener("click", () => {
+      devPanel.style.opacity = "1";
+    });
+    
+    // Hide when clicking outside
+    document.addEventListener("click", (event) => {
+      if (event.target !== devPanel) {
+        devPanel.style.opacity = "0";
+      }
+    });
+    
+    // Handle commands
+    devPanel.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        const command = devPanel.value.trim();
+        devPanel.value = "";
+    
+        if (command.startsWith("$money ")) {
+          const amount = parseFloat(command.split(" ")[1]);
+          if (!isNaN(amount)) {
+            lifeSavings += amount;
+            updateLifeSavingsDisplay();
+          }
+        } else if (command.startsWith("$multiplier ")) {
+          const newMultiplier = parseFloat(command.split(" ")[1]);
+          if (!isNaN(newMultiplier)) {
+            multiplier = newMultiplier;
+            updateMultiplierDisplay();
+          }
+        } else if (command === "$reset") {
+          lifeSavings = 10.0;
+          multiplier = 1;
+          updateLifeSavingsDisplay();
+          updateMultiplierDisplay();
+        }
+      }
+    });
+
     let multiplier = 1;
     const multiplierDisplay = document.getElementById("multiplierDisplay");
 
@@ -202,6 +266,12 @@
           if (finalSymbols.filter(s => s === "+").length === 2) {
             multiplier += 1;
           }
+          if (finalSymbols.filter(s => s === "?").length === 2 && finalSymbols.filter(s => s === "+").length === 1) {
+
+            multiplier += 3;
+            lifeSavings += betAmount * 10 * multiplier;
+          }
+          
           
           updateMultiplierDisplay();
 
