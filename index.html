@@ -106,6 +106,8 @@
   </div>
 
   <div id="lifeSavingsDisplay">Life Savings: 100.00$</div>
+  <div id="debugLogPanel" style="position: fixed; top: 10px; right: 10px; width: 300px; height: 400px; overflow-y: auto; background: #f0f0f0; border: 1px solid #ccc; padding: 5px; display: none; font-family: monospace;"></div>
+
 
   <div class="container">
     <div class="box" id="box1"><div class="text">?</div></div>
@@ -121,6 +123,37 @@
   <button id="gambleButton" disabled>Gamble Life Savings</button>
 
   <script>
+    // Assume these globals exist:
+    let debugMode = false;
+    let spinCounter = 0; // Counts each spin
+    // And assume there's an element with id "debugLogPanel" on the right side (styled as uneditable text)
+    const debugLogPanel = document.getElementById("debugLogPanel");
+    
+    function logSpinInfo(spinResult, betAmount, currentMultiplier, netEarnings) {
+      spinCounter++;
+      const entry = `spin ${spinCounter}| ${spinResult}| bet: ${betAmount}| mul: ${currentMultiplier}x| money: ${netEarnings}`;
+      debugLogPanel.innerHTML += entry + "<br>";
+    }
+    
+    // In your devPanel command listener:
+    devPanel.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        const command = devPanel.value.trim();
+    
+        // ... other command branches (like $money, $spin, $list, etc.)
+    
+        else if (command === "$debug") {
+          // Toggle debug mode: when on, show the debug log panel.
+          debugMode = !debugMode;
+          debugLogPanel.style.display = debugMode ? "block" : "none";
+        }
+        
+        // ... any remaining commands
+    
+        devPanel.value = "";
+      }
+    });
+
     const devPanel = document.getElementById("devPanel");
     let debugMode = false;
     
@@ -340,6 +373,11 @@
 
           
           updateLifeSavingsDisplay();
+          // After the spin is complete and you've updated lifeSavings:
+          let netEarnings = (/* your computed winnings, if any */) - betAmount;
+          let spinResult = finalSymbols.join(" "); // For example, "* $ %"
+          logSpinInfo(spinResult, betAmount, multiplier, netEarnings);
+
         }
       }
 
