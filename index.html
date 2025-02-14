@@ -126,8 +126,6 @@
     
     const devPanel = document.getElementById("devPanel");
     let debugMode = false;
-    // Assume these globals exist:
-    let debugMode = false;
     let spinCounter = 0; // Counts each spin
     // And assume there's an element with id "debugLogPanel" on the right side (styled as uneditable text)
     const debugLogPanel = document.getElementById("debugLogPanel");
@@ -232,12 +230,6 @@
       }
     });
 
-    // Activate the dev panel when pressing "~"
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "`") {
-        devPanel.focus();
-      }
-    });
 
     let multiplier = 1;
     const multiplierDisplay = document.getElementById("multiplierDisplay");
