@@ -125,6 +125,7 @@
   <script>
     
     const devPanel = document.getElementById("devPanel");
+    
     let debugMode = false;
     let spinCounter = 0; // Counts each spin
     // And assume there's an element with id "debugLogPanel" on the right side (styled as uneditable text)
@@ -375,6 +376,19 @@
     });
 
     updateLifeSavingsDisplay();
+    window.onerror = function(message, source, lineno, colno, error) {
+      const errorPanel = document.createElement("div");
+      errorPanel.style.position = "fixed";
+      errorPanel.style.top = "10px";
+      errorPanel.style.left = "10px";
+      errorPanel.style.background = "red";
+      errorPanel.style.color = "white";
+      errorPanel.style.padding = "10px";
+      errorPanel.style.fontFamily = "monospace";
+      errorPanel.style.zIndex = "1000";
+      errorPanel.textContent = `Error: ${message} at ${source}:${lineno}:${colno}`;
+      document.body.appendChild(errorPanel);
+    };
   </script>
 </body>
 </html>
