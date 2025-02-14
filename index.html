@@ -123,39 +123,18 @@
   <button id="gambleButton" disabled>Gamble Life Savings</button>
 
   <script>
+    
+    const devPanel = document.getElementById("devPanel");
+    let debugMode = false;
     // Assume these globals exist:
     let debugMode = false;
     let spinCounter = 0; // Counts each spin
     // And assume there's an element with id "debugLogPanel" on the right side (styled as uneditable text)
     const debugLogPanel = document.getElementById("debugLogPanel");
     
-    function logSpinInfo(spinResult, betAmount, currentMultiplier, netEarnings) {
-      spinCounter++;
-      const entry = `spin ${spinCounter}| ${spinResult}| bet: ${betAmount}| mul: ${currentMultiplier}x| money: ${netEarnings}`;
-      debugLogPanel.innerHTML += entry + "<br>";
-    }
+  
     
-    // In your devPanel command listener:
-    devPanel.addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        const command = devPanel.value.trim();
-    
-        // ... other command branches (like $money, $spin, $list, etc.)
-    
-        else if (command === "$debug") {
-          // Toggle debug mode: when on, show the debug log panel.
-          debugMode = !debugMode;
-          debugLogPanel.style.display = debugMode ? "block" : "none";
-        }
-        
-        // ... any remaining commands
-    
-        devPanel.value = "";
-      }
-    });
 
-    const devPanel = document.getElementById("devPanel");
-    let debugMode = false;
     
     devPanel.addEventListener("focus", () => {
       devPanel.style.opacity = "1";
@@ -187,6 +166,10 @@
             multiplier = newMultiplier;
             updateMultiplierDisplay();
           }
+        } else if (command === "$debug") {
+          // Toggle debug mode: when on, show the debug log panel.
+          debugMode = !debugMode;
+          debugLogPanel.style.display = debugMode ? "block" : "none";
         } else if (command === "$resetmultiplier") {
           multiplier = 1;
           updateMultiplierDisplay();
@@ -329,6 +312,14 @@
       let finalSymbols = [];
       let completedSpins = 0;
 
+
+      function logSpinInfo(spinResult, betAmount, currentMultiplier, netEarnings) {
+        spinCounter++;
+        const entry = `spin ${spinCounter}| ${spinResult}| bet: ${betAmount}| mul: ${currentMultiplier}x| money: ${netEarnings}`;
+        debugLogPanel.innerHTML += entry + "<br>";
+      }
+
+      
       function checkJackpot(symbol) {
         finalSymbols.push(symbol);
         completedSpins++;
