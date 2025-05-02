@@ -241,7 +241,7 @@
     const betInput = document.getElementById("betInput");
     const gambleButton = document.getElementById("gambleButton");
 
-    document.getElementById("title").innerHTML = `Gamble Life Savings - ${lifeSavings.toFixed(2)}$`
+    document.getElementById("title").textContent = `Gamble Life Savings - ${lifeSavings.toFixed(2)}$`
 
     function updateLifeSavingsDisplay() {
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings.toFixed(2)}$`;
