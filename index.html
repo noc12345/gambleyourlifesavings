@@ -123,7 +123,7 @@
   <button id="gambleButton" disabled>Gamble Life Savings</button>
 
   <script>
-    document.getElementById("title").innerHTML = `Gamble Life Savings - ${lifesavings}$`
+    
     const devPanel = document.getElementById("devPanel");
     let debugMode = false;
     
@@ -240,6 +240,8 @@
     const lifeSavingsDisplay = document.getElementById("lifeSavingsDisplay");
     const betInput = document.getElementById("betInput");
     const gambleButton = document.getElementById("gambleButton");
+
+    document.getElementById("title").innerHTML = `Gamble Life Savings - ${lifesavings}$`
 
     function updateLifeSavingsDisplay() {
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings.toFixed(2)}$`;
