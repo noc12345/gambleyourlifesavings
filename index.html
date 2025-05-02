@@ -9,7 +9,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gamble Life Savings</title>
+  <title, id="title">Gamble Life Savings</title>
   <style>
     #devPanel {
       position: fixed;
@@ -107,7 +107,7 @@
     </ul>
   </div>
 
-  <div id="lifeSavingsDisplay">Life Savings: 100.00$</div>
+  <div id="lifeSavingsDisplay">Life Savings: 10.00$</div>
 
   <div class="container">
     <div class="box" id="box1"><div class="text">?</div></div>
@@ -123,6 +123,7 @@
   <button id="gambleButton" disabled>Gamble Life Savings</button>
 
   <script>
+    document.getElementById("title").innerhtml = `Gamble Life Savings - ${lifesavings}`
     const devPanel = document.getElementById("devPanel");
     let debugMode = false;
     
