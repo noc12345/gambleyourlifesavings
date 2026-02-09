@@ -1,8 +1,3 @@
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,13 +59,44 @@
       position: absolute;
       top: -100%;
     }
+
+    .buttonRow {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
     button {
-      display: block;
-      margin: 20px auto;
       padding: 10px 20px;
       font-size: 16px;
       cursor: pointer;
     }
+
+    #autoButton {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 22px;
+    }
+
+    #autoButton .icon {
+      display: inline-block;
+      transition: transform 0.3s;
+    }
+
+    #autoButton.active .icon {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
     #lifeSavingsDisplay {
       font-size: 20px;
       font-weight: bold;
@@ -119,7 +145,12 @@
     <input type="number" id="betInput" min="0.01" step="0.01" />
   </div>
 
-  <button id="gambleButton" disabled>Gamble Life Savings</button>
+  <div class="buttonRow">
+    <button id="gambleButton" disabled>Gamble Life Savings</button>
+    <button id="autoButton" title="Auto Gamble">
+      <span class="icon">⟳</span>
+    </button>
+  </div>
 
   <script>
     const devPanel = document.getElementById("devPanel");
@@ -166,58 +197,10 @@
         } else if (command === "$jackpot") {
           lifeSavings += 77 * multiplier;
           updateLifeSavingsDisplay();
-        } else if (command.startsWith("$spin ")) {
-          const forcedSymbols = command.split(" ").slice(1);
-          if (forcedSymbols.length === 3 && forcedSymbols.every(s => s.length === 1)) {
-            isSpinning = true;
-            gambleButton.disabled = true;
-    
-            let finalSymbols = [];
-            let completedSpins = 0;
-    
-            function checkJackpot(symbol, index) {
-              finalSymbols.push(index === 2 ? forcedSymbols[index] : symbol); // Force last symbol
-              completedSpins++;
-              if (completedSpins === 3) {
-                isSpinning = false;
-                checkGambleAvailability();
-                document.getElementById("box1").querySelector(".text").textContent = finalSymbols[0];
-                document.getElementById("box2").querySelector(".text").textContent = finalSymbols[1];
-                document.getElementById("box3").querySelector(".text").textContent = finalSymbols[2];
-              }
-            }
-    
-            spinBox(document.getElementById("box1"), 15, 20, 50, 40, (s) => checkJackpot(s, 0));
-            spinBox(document.getElementById("box2"), 24, 28, 40, 20, (s) => checkJackpot(s, 1));
-            spinBox(document.getElementById("box3"), 31, 35, 20, 10, (s) => checkJackpot(s, 2));
-          }
-        } else if (command.startsWith("$list")) {
-          const args = command.split(" ").slice(1);
-          if (args.length === 0) {
-            console.log(`Current symbols: ${symbols.join(", ")}`);
-          } else {
-            const newSymbols = args.join("").split(",");
-            symbols.push(...newSymbols.filter(s => !symbols.includes(s)));
-            console.log(`Updated symbols: ${symbols.join(", ")}`);
-          }
-        } else if (command.startsWith("$-list ")) {
-          const removeSymbols = command.split(" ").slice(1).join("").split(",");
-          symbols = symbols.filter(s => !removeSymbols.includes(s));
-          console.log(`Updated symbols: ${symbols.join(", ")}`);
-        } else if (command === "$debug") {
-          debugMode = !debugMode;
-          console.log(`Debug mode: ${debugMode ? "ON" : "OFF"}`);
         }
       }
     });
     
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "`") {
-        devPanel.focus();
-      }
-    });
-
-    // Activate the dev panel when pressing "~"
     document.addEventListener("keydown", (event) => {
       if (event.key === "`") {
         devPanel.focus();
@@ -234,10 +217,12 @@
     const symbols = ["$", "!", "@", "#", "%", "&", "*", "+", "?"];
     let lifeSavings = 10.0;
     let isSpinning = false;
+    let autoMode = false;
 
     const lifeSavingsDisplay = document.getElementById("lifeSavingsDisplay");
     const betInput = document.getElementById("betInput");
     const gambleButton = document.getElementById("gambleButton");
+    const autoButton = document.getElementById("autoButton");
 
     function updateLifeSavingsDisplay() {
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings.toFixed(2)}$`;
@@ -286,7 +271,11 @@
       if (isSpinning) return;
 
       const betAmount = parseFloat(betInput.value);
-      if (betAmount > lifeSavings || isNaN(betAmount) || betAmount < 0.01) return;
+      if (betAmount > lifeSavings || isNaN(betAmount) || betAmount < 0.01) {
+        autoMode = false;
+        autoButton.classList.remove("active");
+        return;
+      }
 
       isSpinning = true;
       gambleButton.disabled = true;
@@ -305,42 +294,37 @@
           checkGambleAvailability();
 
           if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
-            lifeSavings += betAmount * 77 * multiplier; // Jackpot (applies multiplier)
+            lifeSavings += betAmount * 77 * multiplier;
           }
-          // Two "$" symbols reward
           else if (finalSymbols.filter(s => s === "$").length === 2) {
             lifeSavings += betAmount * 2.5 * multiplier;
           }
-          // Two "%" symbols reward
           else if (finalSymbols.filter(s => s === "%").length === 2) {
             lifeSavings += betAmount * 2 * multiplier;
           }
-          // "!!$" combination reward
           else if (finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")) {
             lifeSavings += betAmount * 50 * multiplier;
           }
           
-          // Increase multiplier when getting two "#" symbols
           if (finalSymbols.filter(s => s === "#").length === 2) {
             multiplier += 0.5;
           }
           
-          // Increase multiplier when getting two "+" symbols
           if (finalSymbols.filter(s => s === "+").length === 2) {
             multiplier += 1;
           }
-          if (finalSymbols.filter(s => s === "?").length === 2 && finalSymbols.filter(s => s === "+").length === 1) {
 
+          if (finalSymbols.filter(s => s === "?").length === 2 && finalSymbols.filter(s => s === "+").length === 1) {
             multiplier += 3;
             lifeSavings += betAmount * 10 * multiplier;
           }
-          
-          
+
           updateMultiplierDisplay();
-
-
-          
           updateLifeSavingsDisplay();
+
+          if (autoMode) {
+            setTimeout(gamble, 200);
+          }
         }
       }
 
@@ -350,6 +334,13 @@
     }
 
     gambleButton.addEventListener("click", gamble);
+
+    autoButton.addEventListener("click", () => {
+      autoMode = !autoMode;
+      autoButton.classList.toggle("active");
+      if (autoMode && !isSpinning) gamble();
+    });
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Enter") gamble();
     });
