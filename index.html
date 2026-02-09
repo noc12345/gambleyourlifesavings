@@ -59,44 +59,27 @@
       position: absolute;
       top: -100%;
     }
-
-    .buttonRow {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
     button {
+      margin: 20px 5px;
       padding: 10px 20px;
       font-size: 16px;
       cursor: pointer;
     }
-
-    #autoButton {
-      width: 44px;
-      height: 44px;
-      padding: 0;
+    #buttonRow {
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 22px;
     }
-
-    #autoButton .icon {
-      display: inline-block;
-      transition: transform 0.3s;
+    #autoButton {
+      width: 42px;
+      height: 42px;
+      padding: 0;
+      font-size: 20px;
     }
-
-    #autoButton.active .icon {
-      animation: spin 1s linear infinite;
+    #autoButton:disabled {
+      background: lightgray;
+      cursor: not-allowed;
     }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
     #lifeSavingsDisplay {
       font-size: 20px;
       font-weight: bold;
@@ -145,11 +128,9 @@
     <input type="number" id="betInput" min="0.01" step="0.01" />
   </div>
 
-  <div class="buttonRow">
+  <div id="buttonRow">
     <button id="gambleButton" disabled>Gamble Life Savings</button>
-    <button id="autoButton" title="Auto Gamble">
-      <span class="icon">⟳</span>
-    </button>
+    <button id="autoButton" disabled title="Auto Gamble">⟳</button>
   </div>
 
   <script>
@@ -217,7 +198,7 @@
     const symbols = ["$", "!", "@", "#", "%", "&", "*", "+", "?"];
     let lifeSavings = 10.0;
     let isSpinning = false;
-    let autoMode = false;
+    let autoGambling = false;
 
     const lifeSavingsDisplay = document.getElementById("lifeSavingsDisplay");
     const betInput = document.getElementById("betInput");
@@ -230,7 +211,9 @@
 
     function checkGambleAvailability() {
       const betAmount = parseFloat(betInput.value);
-      gambleButton.disabled = isSpinning || betAmount > lifeSavings || isNaN(betAmount) || betAmount < 0.01;
+      const canGamble = !isSpinning && betAmount <= lifeSavings && !isNaN(betAmount) && betAmount >= 0.01;
+      gambleButton.disabled = !canGamble;
+      autoButton.disabled = !canGamble;
     }
 
     betInput.addEventListener("input", checkGambleAvailability);
@@ -271,14 +254,11 @@
       if (isSpinning) return;
 
       const betAmount = parseFloat(betInput.value);
-      if (betAmount > lifeSavings || isNaN(betAmount) || betAmount < 0.01) {
-        autoMode = false;
-        autoButton.classList.remove("active");
-        return;
-      }
+      if (betAmount > lifeSavings || isNaN(betAmount) || betAmount < 0.01) return;
 
       isSpinning = true;
       gambleButton.disabled = true;
+      autoButton.disabled = true;
 
       lifeSavings -= betAmount;
       updateLifeSavingsDisplay();
@@ -313,17 +293,16 @@
           if (finalSymbols.filter(s => s === "+").length === 2) {
             multiplier += 1;
           }
-
           if (finalSymbols.filter(s => s === "?").length === 2 && finalSymbols.filter(s => s === "+").length === 1) {
             multiplier += 3;
             lifeSavings += betAmount * 10 * multiplier;
           }
-
+          
           updateMultiplierDisplay();
           updateLifeSavingsDisplay();
 
-          if (autoMode) {
-            setTimeout(gamble, 200);
+          if (autoGambling && !gambleButton.disabled) {
+            setTimeout(gamble, 100);
           }
         }
       }
@@ -336,9 +315,9 @@
     gambleButton.addEventListener("click", gamble);
 
     autoButton.addEventListener("click", () => {
-      autoMode = !autoMode;
-      autoButton.classList.toggle("active");
-      if (autoMode && !isSpinning) gamble();
+      autoGambling = !autoGambling;
+      autoButton.style.background = autoGambling ? "#cfcfcf" : "";
+      if (autoGambling) gamble();
     });
 
     document.addEventListener("keydown", (event) => {
