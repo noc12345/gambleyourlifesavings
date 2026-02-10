@@ -97,6 +97,13 @@
       padding: 5px;
       text-align: center;
     }
+    #profitContainer {
+      width: 200px;
+      text-align: center;
+      font-size: 16;
+      position: absolute:
+      border-thickness: 1px;
+    }
   </style>
 </head>
 <body>
@@ -114,7 +121,7 @@
     </ul>
   </div>
 
-  <div id="lifeSavingsDisplay">Life Savings: 100.00$</div>
+  <div id="lifeSavingsDisplay">Life Savings: 10.00$</div>
 
   <div class="container">
     <div class="box" id="box1"><div class="text">?</div></div>
@@ -127,6 +134,10 @@
     <input type="number" id="betInput" min="0.01" step="0.01" />
   </div>
 
+  <div id="profitContainer">
+    
+  </div>
+    
   <div id="buttonRow">
     <button id="gambleButton" disabled>Gamble Life Savings</button>
     <button id="autoButton" disabled title="Auto Gamble">⟳</button>
@@ -180,6 +191,8 @@
         }
       }
     });
+
+    
     
     document.addEventListener("keydown", (event) => {
       if (event.key === "`") {
@@ -205,6 +218,7 @@
     const autoButton = document.getElementById("autoButton");
 
     function updateLifeSavingsDisplay() {
+      document.getElementById("profitContainer").textContent = '+ ${multiplier * 
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings.toFixed(2)}$`;
     }
 
