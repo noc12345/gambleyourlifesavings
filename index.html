@@ -218,7 +218,7 @@
     const autoButton = document.getElementById("autoButton");
 
     function updateLifeSavingsDisplay() {
-      document.getElementById("profitContainer").textContent = 'finalSymbols[1] + ${multiplier * lifeSavings}';
+      document.getElementById("profitContainer").textContent = profit;
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings.toFixed(2)}$`;
     }
 
@@ -277,6 +277,7 @@
 
       let finalSymbols = [];
       let completedSpins = 0;
+      let profit = 0;
 
       function checkJackpot(symbol) {
         finalSymbols.push(symbol);
@@ -287,15 +288,19 @@
 
           if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
             lifeSavings += betAmount * 77 * multiplier;
+            profit = betAmount * 77 * multiplier;
           }
           else if (finalSymbols.filter(s => s === "$").length === 2) {
             lifeSavings += betAmount * 2.5 * multiplier;
+            profit = betAmount * 2.5 * multiplier;
           }
           else if (finalSymbols.filter(s => s === "%").length === 2) {
             lifeSavings += betAmount * 2 * multiplier;
+            profit = betAmount * 2 * multiplier;
           }
           else if (finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")) {
             lifeSavings += betAmount * 50 * multiplier;
+            profit = betAmount * 50 * multiplier;
           }
           
           if (finalSymbols.filter(s => s === "#").length === 2) {
