@@ -101,8 +101,8 @@
       width: 200px;
       text-align: center;
       font-size: 16;
-      position: absolute:
-      border-thickness: 1px;
+      position: fixed;
+      border-width: 1px;
       right: 50%;
       top: 50%
     }
@@ -219,10 +219,20 @@
     const betInput = document.getElementById("betInput");
     const gambleButton = document.getElementById("gambleButton");
     const autoButton = document.getElementById("autoButton");
+    const profitBox = document.getElementById("profitContainer");
 
     function updateLifeSavingsDisplay() {
+      profitBox.style.opacity = '1';
       document.getElementById("profitContainer").textContent = '+' + profit.toFixed(2) + '$';
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings.toFixed(2)}$`;
+      if (profit > 0){
+        profitBox.style.color = 'green';
+      } else{
+        profitBox.style.color = 'red';
+      }
+      setTimeout(() => {
+        profitBox.style.opacity = '0';
+      }, 2000);
     }
 
     function checkGambleAvailability() {
@@ -307,12 +317,12 @@
           
           if (finalSymbols.filter(s => s === "#").length === 2) {
             multiplier += 0.5;
-            profit = 0;
+            profit = -betAmount;
           }
           
           if (finalSymbols.filter(s => s === "+").length === 2) {
             multiplier += 1;
-            profit = 0;
+            profit = -betAmount;
           }
           if (finalSymbols.filter(s => s === "?").length === 2 && finalSymbols.filter(s => s === "+").length === 1) {
             multiplier += 3;
@@ -321,7 +331,7 @@
             
           }
           if (!finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2] || !finalSymbols.filter(s => s === "$").length === 2 || !finalSymbols.filter(s => s === "%").length === 2 || !finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")){
-            profit = 0;
+            profit = -betAmount;
             updateLifeSavingsDisplay();
           }
           updateMultiplierDisplay();
