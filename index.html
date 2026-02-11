@@ -201,6 +201,7 @@
     });
 
     let multiplier = 1;
+    let profit = 0;
     const multiplierDisplay = document.getElementById("multiplierDisplay");
 
     function updateMultiplierDisplay() {
@@ -218,7 +219,7 @@
     const autoButton = document.getElementById("autoButton");
 
     function updateLifeSavingsDisplay() {
-      document.getElementById("profitContainer").textContent = '+' + multiplier;
+      document.getElementById("profitContainer").textContent = '+' + profit;
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings.toFixed(2)}$`;
     }
 
@@ -277,7 +278,6 @@
 
       let finalSymbols = [];
       let completedSpins = 0;
-      let profit = 0;
 
       function checkJackpot(symbol) {
         finalSymbols.push(symbol);
