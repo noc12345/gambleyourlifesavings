@@ -103,6 +103,8 @@
       font-size: 16;
       position: absolute:
       border-thickness: 1px;
+      right: 50%;
+      top: 50%
     }
   </style>
 </head>
@@ -219,7 +221,7 @@
     const autoButton = document.getElementById("autoButton");
 
     function updateLifeSavingsDisplay() {
-      document.getElementById("profitContainer").textContent = '+' + profit;
+      document.getElementById("profitContainer").textContent = '+' + profit.toFixed(2) + '$';
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings.toFixed(2)}$`;
     }
 
@@ -320,6 +322,7 @@
           }
           if (!finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2] || !finalSymbols.filter(s => s === "$").length === 2 || !finalSymbols.filter(s => s === "%").length === 2 || !finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")){
             profit = 0;
+            updateLifeSavingsDisplay();
           }
           updateMultiplierDisplay();
           updateLifeSavingsDisplay();
