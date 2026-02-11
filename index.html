@@ -104,7 +104,7 @@
       position: fixed;
       border-width: 1px;
       right: 50%;
-      top: 50%
+      top: 20%
     }
   </style>
 </head>
@@ -332,7 +332,6 @@
           }
           if (!finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2] || !finalSymbols.filter(s => s === "$").length === 2 || !finalSymbols.filter(s => s === "%").length === 2 || !finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")){
             profit = -betAmount;
-            updateLifeSavingsDisplay();
           }
           updateMultiplierDisplay();
           updateLifeSavingsDisplay();
