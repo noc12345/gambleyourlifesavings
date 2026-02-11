@@ -305,16 +305,22 @@
           
           if (finalSymbols.filter(s => s === "#").length === 2) {
             multiplier += 0.5;
+            profit = 0;
           }
           
           if (finalSymbols.filter(s => s === "+").length === 2) {
             multiplier += 1;
+            profit = 0;
           }
           if (finalSymbols.filter(s => s === "?").length === 2 && finalSymbols.filter(s => s === "+").length === 1) {
             multiplier += 3;
             lifeSavings += betAmount * 10 * multiplier;
+            profit = betAmount * 10 * multiplier;
+            
           }
-          
+          if (!finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2] || !finalSymbols.filter(s => s === "$").length === 2 || !finalSymbols.filter(s => s === "%").length === 2 || !finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")){
+            profit = 0;
+          }
           updateMultiplierDisplay();
           updateLifeSavingsDisplay();
 
