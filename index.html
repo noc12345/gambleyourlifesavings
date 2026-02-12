@@ -189,12 +189,15 @@
           multiplier = 1;
           updateMultiplierDisplay();
         } else if (command === "$resetall") {
+          profit = 10 - lifesavings;
           lifeSavings = 10.0;
           multiplier = 1;
+          
           updateLifeSavingsDisplay();
           updateMultiplierDisplay();
         } else if (command === "$jackpot") {
           lifeSavings += 77 * multiplier;
+          profit = 77 * multiplier;
           updateLifeSavingsDisplay();
         }
       }
@@ -243,6 +246,7 @@
       setTimeout(() => {
         profitBox.style.opacity = '0';
       }, 2000);
+      profit = 0;
     }
 
     function checkGambleAvailability() {
