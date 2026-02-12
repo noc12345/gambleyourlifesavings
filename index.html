@@ -100,7 +100,7 @@
     #profitContainer {
       width: 200px;
       text-align: center;
-      font-size: 16;
+      font-size: 16px;
       position: absolute;
       border-size: 1px;
       justify-content: center;
@@ -301,40 +301,47 @@
         if (completedSpins === 3) {
           isSpinning = false;
           checkGambleAvailability();
-
+          let won = false;
           if (finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2]) {
             lifeSavings += betAmount * 77 * multiplier;
             profit = betAmount * 77 * multiplier;
+            won = true;
           }
           else if (finalSymbols.filter(s => s === "$").length === 2) {
             lifeSavings += betAmount * 2.5 * multiplier;
             profit = betAmount * 2.5 * multiplier;
+            won = true;
           }
           else if (finalSymbols.filter(s => s === "%").length === 2) {
             lifeSavings += betAmount * 2 * multiplier;
             profit = betAmount * 2 * multiplier;
+            won = true;
           }
           else if (finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")) {
             lifeSavings += betAmount * 50 * multiplier;
             profit = betAmount * 50 * multiplier;
+            won = true;
           }
           
           if (finalSymbols.filter(s => s === "#").length === 2) {
             multiplier += 0.5;
             profit = -betAmount;
+            won = false;
           }
           
           if (finalSymbols.filter(s => s === "+").length === 2) {
             multiplier += 1;
             profit = -betAmount;
+            won = false;
           }
           if (finalSymbols.filter(s => s === "?").length === 2 && finalSymbols.filter(s => s === "+").length === 1) {
             multiplier += 3;
             lifeSavings += betAmount * 10 * multiplier;
             profit = betAmount * 10 * multiplier;
+            won = true;
             
           }
-          if (!finalSymbols[0] === finalSymbols[1] && finalSymbols[1] === finalSymbols[2] || !finalSymbols.filter(s => s === "$").length === 2 || !finalSymbols.filter(s => s === "%").length === 2 || !finalSymbols.filter(s => s === "!").length === 2 && finalSymbols.includes("$")){
+          if (won == false){
             profit = -betAmount;
           }
           updateMultiplierDisplay();
