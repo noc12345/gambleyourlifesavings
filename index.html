@@ -227,12 +227,16 @@
 
     function updateLifeSavingsDisplay() {
       profitBox.style.opacity = '1';
-      document.getElementById("profitContainer").textContent = '+' + profit.toFixed(2) + '$';
+      
       lifeSavingsDisplay.textContent = `Life Savings: ${lifeSavings.toFixed(2)}$`;
       if (profit > 0){
         profitBox.style.color = 'green';
+        document.getElementById("profitContainer").textContent = '+' + profit.toFixed(2) + '$';
+      } else if (profit == 0){
+        profitBox.style.opacity = '0';
       } else{
         profitBox.style.color = 'red';
+        document.getElementById("profitContainer").textContent = profit.toFixed(2) + '$';
       }
       setTimeout(() => {
         profitBox.style.opacity = '0';
