@@ -161,6 +161,8 @@
       if (event.key === "Enter") {
         const command = devPanel.value.trim();
         devPanel.value = "";
+        event.preventDefault();
+        event.stopPropagation();
     
         if (command.startsWith("$money ")) {
           const amount = parseFloat(command.split(" ")[1]);
